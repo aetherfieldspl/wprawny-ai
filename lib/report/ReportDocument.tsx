@@ -10,16 +10,21 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-import path from "node:path";
+
 import type { AuditAnswers, ClassificationResult, RiskLevel } from "@/lib/types";
 
-const FONT_DIR = path.join(process.cwd(), "public", "fonts");
+
+
+function fontUrl(filename: string): string {
+  const base = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  return base + "/fonts/" + filename;
+}
 
 Font.register({
   family: "Lato",
   fonts: [
-    { src: path.join(FONT_DIR, "Lato-Regular.ttf") },
-    { src: path.join(FONT_DIR, "Lato-Bold.ttf"), fontWeight: 700 },
+    { src: fontUrl("Lato-Regular.ttf") },
+    { src: fontUrl("Lato-Bold.ttf"), fontWeight: 700 },
   ],
 });
 
