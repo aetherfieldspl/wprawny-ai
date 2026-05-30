@@ -23,11 +23,11 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = await renderToBuffer(
-      React.createElement(ReportDocument, {
-        answers: body.answers,
-        result: body.result,
-      })
-    );
+  React.createElement(ReportDocument, {
+    answers: body.answers,
+    result: body.result,
+  }) as any
+);
 
     return new Response(new Uint8Array(buffer), {
       status: 200,
