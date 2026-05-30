@@ -1,11 +1,9 @@
-// app/api/report/route.ts
-// POST { answers, result, email } → zwraca raport PDF.
 import { NextRequest } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { ReportDocument } from "@/lib/report/ReportDocument";
 import type { AuditAnswers, ClassificationResult } from "@/lib/types";
+import React from "react";
 
-// react-pdf wymaga środowiska Node (nie Edge).
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -25,10 +23,12 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = await renderToBuffer(
-      ReportDocument({ answers: body.answers, result: body.result })
+      React.createElement(ReportDocument, {
+        answers: body.answers,
+        result: body.result,
+      })
     );
 
-    // Buffer (Node) → Uint8Array, aby pasował do webowego typu BodyInit.
     return new Response(new Uint8Array(buffer), {
       status: 200,
       headers: {

@@ -1,7 +1,4 @@
 // lib/report/ReportDocument.tsx
-// Raport PDF generowany po stronie serwera (@react-pdf/renderer).
-// Rejestrujemy lokalny font Lato — polskie znaki nie działają na domyślnej Helvetice.
-
 import {
   Document,
   Page,
@@ -10,14 +7,14 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-
 import type { AuditAnswers, ClassificationResult, RiskLevel } from "@/lib/types";
 
-
-
 function fontUrl(filename: string): string {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  return base + "/fonts/" + filename;
+  // VERCEL_URL jest automatycznie ustawiane przez Vercel
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}/fonts/${filename}`;
+  }
+  return `http://localhost:3000/fonts/${filename}`;
 }
 
 Font.register({
@@ -26,10 +23,7 @@ Font.register({
     { src: fontUrl("Lato-Regular.ttf") },
     { src: fontUrl("Lato-Bold.ttf"), fontWeight: 700 },
   ],
-});
-
-// react-pdf nie czyta zmiennych CSS — paleta zapisana wprost.
-const COLOR = {
+});const COLOR = {
   ink: "#1c2826",
   inkSoft: "#5a6664",
   brand: "#134e4a",
