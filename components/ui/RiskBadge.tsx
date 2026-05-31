@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import type { RiskLevel } from "@/lib/types";
 
 interface RiskMeta {
@@ -5,7 +6,7 @@ interface RiskMeta {
   short: string;
   color: string;
   /** Symbol kształtu — rozróżnialny bez koloru (dostępność). */
-  Icon: () => JSX.Element;
+  Icon: () => ReactElement;
 }
 
 const Octagon = () => (
