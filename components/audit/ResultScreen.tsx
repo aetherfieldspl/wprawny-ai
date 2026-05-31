@@ -172,7 +172,7 @@ function Timeline() {
         ))}
       </ol>
       <p className="mt-3 text-xs text-ink-soft/70">
-        Daty orientacyjne — przy publikacji zweryfikuj aktualny harmonogram i wytyczne.
+        Harmonogram uwzglednia daty z pierwszej wersji Ai Act. Aktualnie trwaja prace nad Omnibusem, ktory opoznia niektore wdrozenia.
       </p>
     </section>
   );
