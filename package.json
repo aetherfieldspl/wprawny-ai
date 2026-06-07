@@ -10,7 +10,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "fonts": "node scripts/fetch-fonts.mjs"
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "scrape:biuletyn": "node scripts/scrape-biuletyn.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

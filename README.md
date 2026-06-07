@@ -37,6 +37,29 @@ npm test          # testy klasyfikatora (Vitest)
 > Fonty są już dołączone w `public/fonts`. `npm run fonts` przydaje się tylko, gdyby ich brakowało
 > (pobiera Lato, Spectral, IBM Plex Mono z repozytorium google/fonts).
 
+## Scraper Biuletynu UODO
+
+Skrypt `scripts/scrape-biuletyn.mjs` pobiera artykuły z Biuletynu UODO
+(<https://nowybiuletyn.uodo.gov.pl/>) i zapisuje każdy jako plik **Markdown**
+z nagłówkiem YAML (tytuł, URL, data, autor, kategorie) oraz treścią
+skonwertowaną z HTML na Markdown. Dodatkowo tworzy `index.md` ze spisem artykułów.
+
+```bash
+npm run scrape:biuletyn                       # pobierz wszystkie artykuły
+npm run scrape:biuletyn -- --limit=20         # tylko 20 najnowszych
+npm run scrape:biuletyn -- --out=dane/uodo    # inny katalog wyjściowy
+npm run scrape:biuletyn -- --force            # nadpisz istniejące pliki
+npm run scrape:biuletyn -- --list-only        # tylko wypisz listę URL-i
+npm run scrape:biuletyn -- --delay=1500       # odstęp między żądaniami (ms)
+```
+
+Domyślny katalog wyjściowy to `scraped/biuletyn-uodo/` (ignorowany przez git).
+Skrypt nie ma zależności — używa wbudowanego `fetch` Node.js. Wykrywanie
+artykułów odbywa się przez kanał RSS z paginacją (`/feed/?paged=N`), ponieważ
+REST API WordPressa jest zablokowane, a mapy sitemap brak. Domyślnie pomija już
+pobrane pliki (`--force` wymusza ponowne pobranie). Skrypt jest grzeczny:
+ustawia `User-Agent`, robi odstępy między żądaniami i ponawia próby z backoffem.
+
 ## Struktura projektu
 
 ```

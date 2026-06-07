@@ -11,3 +11,6 @@ npm-debug.log*
 
 .vercel
 .env*
+
+# Pobrane treści Biuletynu UODO (scraper) — nie wersjonujemy treści zewnętrznych
+scraped/
