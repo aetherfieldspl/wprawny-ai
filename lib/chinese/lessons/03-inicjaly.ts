@@ -1,0 +1,148 @@
+import type { Lesson } from "../types";
+
+export const lesson03: Lesson = {
+  number: 3,
+  slug: "03-inicjaly",
+  title: "Pinyin cz. 1: spółgłoski",
+  subtitle: "21 inicjałów i polskie „ściągi” do każdego z nich",
+  goals: [
+    "czytasz wszystkie spółgłoski pinyinu",
+    "odróżniasz pary z wydechem i bez (b/p, d/t, g/k…)",
+    "nie mylisz j q x z zh ch sh",
+  ],
+  blocks: [
+    {
+      kind: "text",
+      body: [
+        "Pinyin używa liter łacińskich, ale nie czyta ich po polsku. Na szczęście polski ma prawie wszystkie potrzebne dźwięki — często lepiej niż angielski! Poniżej każdy inicjał ma polską „ściągę”. To przybliżenia: dopracujesz je, słuchając nagrań.",
+      ],
+    },
+    {
+      kind: "table",
+      title: "Inicjały z polskimi odpowiednikami",
+      headers: ["Pinyin", "Czytaj mniej więcej jak…", "Przykład"],
+      rows: [
+        ["b", "„p” bez wydechu — dla Polaka brzmi prawie jak „b”", "爸 bà — tata"],
+        ["p", "„p” z mocnym wydechem (ph)", "怕 pà — bać się"],
+        ["m", "„m”", "妈 mā — mama"],
+        ["f", "„f”", "飞 fēi — latać"],
+        ["d", "„t” bez wydechu — prawie „d”", "大 dà — duży"],
+        ["t", "„t” z wydechem (th)", "他 tā — on"],
+        ["n", "„n”", "你 nǐ — ty"],
+        ["l", "„l”", "来 lái — przychodzić"],
+        ["g", "„k” bez wydechu — prawie „g”", "哥 gē — starszy brat"],
+        ["k", "„k” z wydechem (kh)", "看 kàn — patrzeć"],
+        ["h", "„ch” (jak w „chata”)", "好 hǎo — dobry"],
+        ["j", "miękkie „dź” (jak w „dzień”)", "家 jiā — dom"],
+        ["q", "miękkie „ć” z wydechem", "去 qù — iść"],
+        ["x", "miękkie „ś”", "谢 xiè — dziękować"],
+        ["zh", "twarde „dż” (jak w „dżem”)", "中 zhōng — środek"],
+        ["ch", "twarde „cz” z wydechem", "吃 chī — jeść"],
+        ["sh", "„sz”", "是 shì — być"],
+        ["r", "coś między „ż” a angielskim „r”", "人 rén — człowiek"],
+        ["z", "„dz” (jak w „dzwon”)", "字 zì — znak"],
+        ["c", "„c” z wydechem", "菜 cài — danie"],
+        ["s", "„s”", "四 sì — cztery"],
+      ],
+    },
+    {
+      kind: "callout",
+      variant: "tip",
+      title: "Test kartki: z wydechem czy bez?",
+      body: [
+        "Trzymaj kartkę papieru kilka centymetrów przed ustami. Przy p, t, k, q, ch, c kartka powinna się wyraźnie poruszyć (mocny wydech). Przy b, d, g, j, zh, z — prawie wcale.",
+        "W chińskim nie chodzi o dźwięczność (jak nasze b/p), tylko właśnie o ten wydech. Dlatego „b” z pinyinu brzmi dla nas jak coś pomiędzy „b” a „p”.",
+      ],
+    },
+    {
+      kind: "table",
+      title: "Pary z wydechem — ucz się ich razem",
+      headers: ["Bez wydechu", "Z wydechem"],
+      rows: [
+        ["b", "p"],
+        ["d", "t"],
+        ["g", "k"],
+        ["j", "q"],
+        ["zh", "ch"],
+        ["z", "c"],
+      ],
+    },
+    {
+      kind: "callout",
+      variant: "warning",
+      title: "Pułapka: „i” po zh ch sh r z c s",
+      body: [
+        "W sylabach zhi, chi, shi, ri, zi, ci, si litera „i” NIE oznacza polskiego „i”. To przedłużone „brzęczenie” spółgłoski — po polsku najbliżej do „y”.",
+        "shì ≈ „szy”, chī ≈ „czy” (z wydechem), rì ≈ „ży”, zì ≈ „dzy”, sì ≈ „sy”. Za to xi, ji, qi czytamy z prawdziwym „i”: xī ≈ „śi”.",
+      ],
+    },
+    {
+      kind: "callout",
+      variant: "memory",
+      title: "j q x — tylko przed „i” i „ü”",
+      body: [
+        "Te trzy spółgłoski są zawsze miękkie (jak polskie ś, ć, dź) i występują wyłącznie przed „i” lub „ü”. Dzięki temu łatwo je odróżnić od twardych zh ch sh.",
+        "Porównaj: 西 xī (zachód, miękkie „śi”) vs 是 shì (być, twarde „szy”).",
+      ],
+    },
+    {
+      kind: "words",
+      title: "Słowa do przeczytania",
+      items: [
+        { hanzi: "爸爸", pinyin: "bàba", pl: "tata" },
+        { hanzi: "他", pinyin: "tā", pl: "on" },
+        { hanzi: "哥哥", pinyin: "gēge", pl: "starszy brat" },
+        { hanzi: "家", pinyin: "jiā", pl: "dom, rodzina" },
+        { hanzi: "去", pinyin: "qù", pl: "iść, jechać" },
+        { hanzi: "谢谢", pinyin: "xièxie", pl: "dziękuję" },
+        { hanzi: "吃", pinyin: "chī", pl: "jeść" },
+        { hanzi: "是", pinyin: "shì", pl: "być" },
+        { hanzi: "人", pinyin: "rén", pl: "człowiek" },
+        { hanzi: "字", pinyin: "zì", pl: "znak (pisma)" },
+        { hanzi: "菜", pinyin: "cài", pl: "danie; warzywo" },
+        { hanzi: "四", pinyin: "sì", pl: "cztery" },
+      ],
+    },
+  ],
+  quiz: [
+    {
+      q: "Jak mniej więcej brzmi pinyinowe „x” w 谢 xiè?",
+      options: ["„ks”", "miękkie „ś”", "„sz”", "„ch”"],
+      answer: 1,
+      explain: "x to miękkie „ś”: xiè ≈ „sie”.",
+    },
+    {
+      q: "Czym różni się „b” od „p” w pinyinie?",
+      options: [
+        "b jest dźwięczne, p bezdźwięczne",
+        "p wymawiamy z mocnym wydechem, b bez",
+        "Niczym, to warianty zapisu",
+        "b jest wyższe tonem",
+      ],
+      answer: 1,
+      explain: "Kluczowy jest wydech (aspiracja) — sprawdzisz go testem kartki.",
+    },
+    {
+      q: "Jak czytamy 是 shì?",
+      options: ["„szi” jak w „szisza”", "„szy”", "„si”", "„śi”"],
+      answer: 1,
+      explain: "Po sh „i” to przedłużona spółgłoska — najbliżej polskiego „szy”.",
+    },
+    {
+      q: "Przed którymi samogłoskami występują j, q, x?",
+      options: ["a i o", "tylko przed e", "i oraz ü", "przed wszystkimi"],
+      answer: 2,
+      explain: "j q x łączą się wyłącznie z i oraz ü.",
+    },
+    {
+      q: "Który inicjał czytamy jak polskie „ch”?",
+      options: ["ch", "h", "k", "q"],
+      answer: 1,
+      explain: "Pinyinowe h ≈ polskie „ch” (好 hǎo ≈ „chao”). Pinyinowe ch to twarde „cz”!",
+    },
+  ],
+  practice: [
+    "Zrób test kartki dla par b/p, d/t, g/k, z/c.",
+    "Przeczytaj na głos: shì – xī – chī – qī – zhī – jī. Czujesz różnicę twarde/miękkie?",
+  ],
+};

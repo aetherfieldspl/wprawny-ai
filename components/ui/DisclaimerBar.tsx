@@ -1,4 +1,11 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export function DisclaimerBar() {
+  // Zastrzeżenie prawne dotyczy narzędzi AI Act — nie kursu chińskiego.
+  if (usePathname()?.startsWith("/kurs-chinskiego")) return null;
+
   return (
     <footer className="mt-20 border-t border-line bg-card/60">
       <div className="mx-auto max-w-5xl px-5 py-6">

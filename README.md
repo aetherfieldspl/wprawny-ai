@@ -45,9 +45,11 @@ app/
   audyt/page.tsx        Kreator audytu
   api/lead/route.ts     Zapis leada (MVP: log; TODO: Supabase + Resend)
   api/report/route.ts   Generowanie raportu PDF
+  kurs-chinskiego/      Kurs podstaw chińskiego (program + 12 lekcji)
 components/
   audit/                Kreator: AuditWizard + kroki + ekran wyniku
   ui/                   Logo, Button, RiskBadge, DisclaimerBar
+  chinese/              Lekcja, quiz, trener liczebników, wykres tonów, odsłuch
 lib/
   types.ts              Typy domenowe
   questions.ts          Baza pytań (Blok 0, A, B, GPAI, C, D)  ← treść do weryfikacji
@@ -55,9 +57,27 @@ lib/
   classifier.ts         Drzewo decyzyjne (IP)                   ← logika do weryfikacji
   classifier.test.ts    Testy logiki klasyfikacji
   report/ReportDocument.tsx   Szablon raportu PDF
+  chinese/lessons/      Treść 12 lekcji kursu chińskiego (czyste dane)
+  chinese/numbers.ts    Liczba → zapis chiński (0–99 999 999) + testy
 public/fonts/           Fonty z polskimi znakami (TTF)
 scripts/fetch-fonts.mjs Pobieranie fontów
 ```
+
+## Kurs podstaw chińskiego (`/kurs-chinskiego`)
+
+12 lekcji od zera, w czterech modułach:
+
+1. **Fundamenty dźwięku** — jak działa chiński, 4 tony + neutralny, spółgłoski i samogłoski
+   pinyinu, wyjątki tonalne (3+3, 不, 一).
+2. **Pismo i słowa** — znaki jak puzzle (klucze, skojarzenia), pisanie ręczne (kreski,
+   kolejność) i cyfrowe (klawiatura pinyin, pismo odręczne), budowanie słów wielosylabowych.
+3. **Liczby** — od 0 do 99 oraz do 99 999 999 (万, 零, 两), z interaktywnym trenerem.
+4. **Pierwsze rozmowy** — zaimki osobowe i dzierżawcze, wyrażenia formalne i nieformalne
+   (对不起 vs 不好意思 vs 抱歉).
+
+Każda lekcja kończy się quizem; wynik zapisuje się wyłącznie w `localStorage` przeglądarki.
+Odsłuch korzysta z syntezatora mowy przeglądarki (Web Speech API, `zh-CN`) — nic nie trafia
+na serwer. Treść lekcji to dane w `lib/chinese/lessons/*.ts`, sprawdzane testami spójności.
 
 ## Jak działa klasyfikacja
 

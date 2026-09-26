@@ -83,3 +83,26 @@ h1, h2, h3, .font-display {
 .rail-dot {
   transition: all 0.3s ease;
 }
+
+/* ── Kurs chińskiego ───────────────────────────────────────────── */
+
+/* Znaki chińskie — systemowe fonty CJK (lokalne fonty marki nie mają glifów han) */
+.font-han {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC",
+    "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Kolory tonów — zawsze razem z numerem tonu, nigdy jako jedyny sygnał */
+:root {
+  --tone-1: #b3261e;
+  --tone-2: #b7791f;
+  --tone-3: #15803d;
+  --tone-4: #1d4ed8;
+}
+
+/* Delikatne tła stanów (Tailwind 3 nie nakłada /opacity na kolory z var()) */
+.tint-ok { background-color: color-mix(in srgb, var(--risk-minimal) 10%, var(--card)); }
+.tint-bad { background-color: color-mix(in srgb, var(--risk-prohibited) 9%, var(--card)); }
+.tint-warn { background-color: color-mix(in srgb, var(--risk-limited) 12%, var(--card)); }
+.tint-brand { background-color: color-mix(in srgb, var(--brand) 7%, var(--card)); }
