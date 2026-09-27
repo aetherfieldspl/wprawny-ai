@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rabbit Hole Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EDEFF5; --surface:#FFFFFF; --surface-2:#F5F6FA; --ink:#161927; --ink-2:#4A5068; --ink-3:#6E748C;
+  --line:#D5D9E5; --accent:#3A3ED6; --focus:#3A3ED6;
+  --ok:#1C744A; --ok-bg:#DDF1E6; --warn:#955400; --warn-bg:#FBEBD0;
+  --tint-to:#000; --tint-amt:18%; --band-amt:6%;
+  --shadow:0 1px 2px rgba(22,25,39,.06),0 4px 14px rgba(22,25,39,.06);
+  --shadow-lift:0 2px 4px rgba(22,25,39,.08),0 10px 26px rgba(22,25,39,.12);
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F111A; --surface:#181B27; --surface-2:#1E2230; --ink:#E9EBF3; --ink-2:#A7ADC2; --ink-3:#7F869E;
+    --line:#2B3042; --accent:#9A9DFF; --focus:#9A9DFF;
+    --ok:#62CF98; --ok-bg:#16301F; --warn:#F2B650; --warn-bg:#35270F;
+    --tint-to:#fff; --tint-amt:48%; --band-amt:9%;
+    --shadow:0 1px 2px rgba(0,0,0,.3); --shadow-lift:0 2px 6px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F111A; --surface:#181B27; --surface-2:#1E2230; --ink:#E9EBF3; --ink-2:#A7ADC2; --ink-3:#7F869E;
+  --line:#2B3042; --accent:#9A9DFF; --focus:#9A9DFF;
+  --ok:#62CF98; --ok-bg:#16301F; --warn:#F2B650; --warn-bg:#35270F;
+  --tint-to:#fff; --tint-amt:48%; --band-amt:9%;
+  --shadow:0 1px 2px rgba(0,0,0,.3); --shadow-lift:0 2px 6px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:28px 48px}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--focus);outline-offset:2px;border-radius:6px}
+
+/* ---------- header ---------- */
+header.top{display:grid;grid-template-columns:1fr auto;gap:18px 28px;align-items:end}
+.brand h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,5.4vw,56px);line-height:.95;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.brand h1 .hole{display:inline-block;width:.62em;height:.62em;border-radius:50%;background:radial-gradient(circle at 50% 62%,#05060A 0 52%,#2A2E40 70%,var(--ink) 72%);vertical-align:.02em;margin-left:.08em}
+.brand p{margin:12px 0 0;color:var(--ink-2);max-width:62ch;font-size:16px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.stat{display:flex;flex-direction:column;align-items:flex-start;padding:8px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);min-width:88px}
+.stat b{font-family:var(--display);font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em}
+.stat.ok b{color:var(--ok)} .stat.warn b{color:var(--warn)}
+.langsw{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface);margin-bottom:10px}
+.langsw button{border:0;background:none;padding:4px 12px;border-radius:999px;font-family:var(--mono);font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+.langsw button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.topright{display:flex;flex-direction:column;align-items:flex-end}
+
+/* ---------- toolbar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin-top:24px;margin-inline:-8px;padding:10px 8px;background:color-mix(in oklab,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid transparent}
+.bar.stuck{border-bottom-color:var(--line)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 260px;position:relative}
+.search input{width:100%;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:0 38px 0 40px;font:inherit;color:var(--ink)}
+.search input::placeholder{color:var(--ink-3)}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.search .clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;width:30px;height:30px;border-radius:8px;cursor:pointer;color:var(--ink-3);font-size:18px;line-height:1}
+.toggle{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:14px;white-space:nowrap}
+.toggle[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.toggle .sw{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.chips{display:flex;gap:6px;margin-top:10px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+@media (min-width:900px){.chips{flex-wrap:wrap;overflow:visible}}
+.chip{--c-ink:color-mix(in oklab,var(--c),var(--tint-to) var(--tint-amt));flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px 0 10px;border-radius:999px;border:1px solid color-mix(in oklab,var(--c) 30%,var(--line));background:color-mix(in oklab,var(--c) 8%,var(--surface));cursor:pointer;font-size:13.5px;white-space:nowrap}
+.chip i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.chip small{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.chip[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#fff}
+.chip[aria-pressed="true"] i{background:#fff}
+.chip[aria-pressed="true"] small{color:rgba(255,255,255,.8)}
+.chip.all{--c:var(--ink)}
+.chip.all[aria-pressed="true"]{color:var(--bg)}
+.chip.all[aria-pressed="true"] i{background:var(--bg)}
+.chip.all[aria-pressed="true"] small{color:color-mix(in oklab,var(--bg) 75%,transparent)}
+.chip.dim{opacity:.45}
+
+/* ---------- legend / adjust banner ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin:18px 0 6px;color:var(--ink-2);font-size:13.5px}
+.legend .k{display:inline-flex;align-items:center;gap:8px}
+.lg{display:inline-block;border-radius:5px;background:var(--ink-3)}
+.lg.l1{width:26px;height:18px}.lg.l2{width:20px;height:13px;background:color-mix(in oklab,var(--ink-3) 40%,var(--surface));border:1px solid var(--ink-3)}.lg.l3{width:18px;height:9px;border-radius:9px;border:1.5px solid var(--ink-3);background:none}
+.legend .note{color:var(--ink-3)}
+.adjbanner{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:14px 0 4px;padding:12px 16px;border-radius:12px;border:1.5px dashed var(--accent);background:color-mix(in oklab,var(--accent) 8%,var(--surface));font-size:14px}
+.adjbanner button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 12px;cursor:pointer}
+
+/* ---------- topic bands ---------- */
+.bands{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.band{--c-ink:color-mix(in oklab,var(--c),var(--tint-to) var(--tint-amt));display:grid;grid-template-columns:210px 1fr;gap:18px 24px;padding:18px;border-radius:18px;background:color-mix(in oklab,var(--c) var(--band-amt),var(--bg));border:1px solid color-mix(in oklab,var(--c) 18%,var(--line));scroll-margin-top:150px}
+.band-head{display:flex;flex-direction:column;gap:6px}
+.band-head .sq{width:34px;height:34px;border-radius:10px;background:var(--c);display:grid;place-items:center;color:#fff}
+.band-head h2{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.15;margin:4px 0 0;color:var(--c-ink);text-wrap:balance;letter-spacing:-.01em}
+.band-head .cnt{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.items{display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;align-items:flex-start}
+
+.site{position:relative;display:flex;min-width:0}
+.site a{text-decoration:none;display:flex;min-width:0}
+.site .info{border:0;cursor:pointer;display:grid;place-items:center;flex:0 0 auto}
+.site .adj{display:none;gap:4px}
+body.adjusting .site .adj{display:flex}
+.adj button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;font-size:12px}
+.adj button:disabled{opacity:.35;cursor:default}
+.rank{font-family:var(--mono);font-size:11.5px;letter-spacing:.02em}
+.dom{font-family:var(--mono);font-size:12px;overflow-wrap:anywhere}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:2px 8px 2px 6px;border-radius:999px;white-space:nowrap}
+.badge.ok{color:var(--ok);background:var(--ok-bg)} .badge.warn{color:var(--warn);background:var(--warn-bg)}
+
+/* tier 1: featured tile */
+.t1{flex:1 1 270px;max-width:360px}
+.t1 a{flex:1;flex-direction:column;gap:6px;min-height:150px;padding:16px 46px 16px 18px;border-radius:16px;background:var(--c);color:#fff;box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease}
+.t1 a:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.t1 .rank{opacity:.85}
+.t1 .nm{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.05;letter-spacing:-.015em;text-wrap:balance}
+.t1 .ds{font-size:14px;line-height:1.4;opacity:.93;max-width:34ch}
+.t1 .foot{margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:6px}
+.t1 .dom{opacity:.85}
+.t1 .badge{background:rgba(255,255,255,.18);color:#fff}
+.t1 .info{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff}
+.t1 .adj{position:absolute;bottom:12px;right:12px}
+
+/* tier 2: card */
+.t2{flex:0 1 220px}
+.t2 a{flex:1;flex-direction:column;gap:4px;min-height:96px;width:100%;padding:12px 40px 12px 14px;border-radius:13px;background:var(--surface);border:1.5px solid color-mix(in oklab,var(--c) 38%,var(--line));transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+.t2 a:hover{border-color:var(--c);transform:translateY(-1px);box-shadow:var(--shadow)}
+.t2 .rank{color:var(--c-ink)}
+.t2 .nm{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.15;color:var(--ink)}
+.t2 .dom{color:var(--ink-3);font-size:11.5px}
+.t2 .foot{margin-top:auto;padding-top:4px}
+.t2 .info{position:absolute;top:9px;right:9px;width:24px;height:24px;border-radius:50%;background:color-mix(in oklab,var(--c) 14%,var(--surface));color:var(--c-ink)}
+.t2 .adj{position:absolute;bottom:8px;right:8px}
+
+/* tier 3: pill */
+.t3{align-items:center;height:38px;border-radius:999px;background:var(--surface);border:1.5px dashed color-mix(in oklab,var(--c) 45%,var(--line));padding-right:4px;transition:border-color .15s ease}
+.t3:hover{border-color:var(--c);border-style:solid}
+.t3 a{align-items:center;gap:8px;height:100%;padding:0 6px 0 14px;border-radius:999px;font-size:14px;font-weight:700;color:var(--ink);white-space:nowrap}
+.t3 a::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.t3 .rank{color:var(--ink-3);font-weight:400}
+.t3 .shield{display:inline-flex}
+.t3 .shield.ok{color:var(--ok)} .t3 .shield.warn{color:var(--warn)}
+.t3 .info{width:26px;height:26px;border-radius:50%;background:transparent;color:var(--ink-3)}
+.t3 .info:hover{background:var(--surface-2)}
+.t3 .adj{margin-left:4px}
+
+.empty{padding:40px 18px;text-align:center;color:var(--ink-2);border:1.5px dashed var(--line);border-radius:18px}
+.empty button{margin-top:10px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;cursor:pointer}
+
+/* ---------- detail popover ---------- */
+#tip{position:fixed;z-index:50;width:min(340px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lift);padding:14px 16px 16px;font-size:14px}
+#tip .th{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+#tip .th i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+#tip .th span{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+#tip h3{font-family:var(--display);font-size:20px;margin:2px 0 0;line-height:1.15}
+#tip .dom{color:var(--ink-3)}
+#tip p{margin:8px 0 0;line-height:1.45}
+#tip .cav{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--surface-2);color:var(--ink-2);font-size:13.5px}
+#tip .cav b{display:block;color:var(--ink);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+#tip .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#tip .pop{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+#tip .go{display:inline-block;margin-top:12px;font-weight:700;color:var(--accent)}
+#tip .x{position:absolute;top:8px;right:8px;width:28px;height:28px;border:0;border-radius:8px;background:none;cursor:pointer;color:var(--ink-3);font-size:18px}
+
+/* ---------- footer ---------- */
+footer.notes{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+footer.notes section{padding:16px 18px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+footer.notes h4{margin:0 0 6px;font-family:var(--display);font-size:16px}
+footer.notes p{margin:0;color:var(--ink-2);font-size:14px;line-height:1.5;max-width:65ch}
+
+@media (max-width:760px){
+  header.top{grid-template-columns:1fr}
+  .topright{align-items:flex-start}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:6px}
+  .stat{min-width:0;padding:7px 10px}
+  .stat b{font-size:20px}
+  .stat span{font-size:10.5px;letter-spacing:.04em}
+  .topright{flex-direction:column-reverse;gap:10px}
+  .langsw{margin-bottom:0}
+  .band{grid-template-columns:1fr;padding:14px}
+  .band-head{flex-direction:row;align-items:center;gap:10px}
+  .band-head h2{margin:0;font-size:19px}
+  .band-head .cnt{margin-left:auto}
+  .t1{flex-basis:100%;max-width:none}
+  .t1 a{min-height:128px}
+  .t2{flex:1 1 calc(50% - 5px)}
+}
+@media (max-width:400px){.t2{flex-basis:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1 id="h-title">Rabbit Hole Atlas<span class="hole" aria-hidden="true"></span></h1>
+      <p id="h-tag"></p>
+    </div>
+    <div class="topright">
+      <div class="langsw" role="group" aria-label="Language / Język">
+        <button type="button" id="lang-en" data-lang="en">EN</button>
+        <button type="button" id="lang-pl" data-lang="pl">PL</button>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+  </header>
+
+  <div class="bar" id="bar">
+    <div class="controls">
+      <label class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" autocomplete="off">
+        <button type="button" class="clear" id="q-clear" hidden>×</button>
+      </label>
+      <button type="button" class="toggle" id="low-only" aria-pressed="false"><span class="sw" aria-hidden="true"></span><span></span></button>
+      <button type="button" class="toggle" id="adjust" aria-pressed="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M7 4 3 8M7 4l4 4M17 20V4M17 20l-4-4M17 20l4-4"/></svg><span></span>
+      </button>
+    </div>
+    <nav class="chips" id="chips" aria-label="Topics"></nav>
+  </div>
+
+  <div class="adjbanner" id="adjbanner" hidden>
+    <span id="adj-text"></span>
+    <span style="display:flex;gap:8px"><button type="button" id="adj-reset"></button><button type="button" id="adj-done"></button></span>
+  </div>
+  <div class="legend" id="legend"></div>
+
+  <main class="bands" id="bands"></main>
+
+  <footer class="notes" id="notes"></footer>
+</div>
+
+<div id="tip" role="dialog" aria-modal="false" hidden></div>
+
+<script>
+(function(){
+"use strict";
+
+/* Topics: id, colour, English name, Polish name, icon path */
+const TOPICS = [
+  ["live","#0B7A84","Live Earth & Tracking","Ziemia na żywo i śledzenie","M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20"],
+  ["world","#2F57CF","World Data & Comparisons","Dane o świecie i porównania","M4 20V10M10 20V4M16 20v-7M22 20H2"],
+  ["maps","#2C7A33","Maps & Virtual Exploration","Mapy i wirtualne podróże","M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"],
+  ["learn","#C04212","Interactive Learning","Nauka przez zabawę","M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"],
+  ["space","#4535C4","Space & Astronomy","Kosmos i astronomia","M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"],
+  ["story","#B42D66","Data Storytelling","Opowieści w danych","M4 19c3-6 5-6 8-2s5 0 8-8M4 5h6M4 9h3"],
+  ["official","#4A5670","Official & Public Data","Dane oficjalne i publiczne","M3 21h18M5 21V10M19 21V10M9 21v-8M15 21v-8M2 10l10-6 10 6"],
+  ["books","#8A5710","Books, Archives & Libraries","Książki, archiwa i biblioteki","M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM4 19a2 2 0 0 1 2-2h13"],
+  ["art","#9230A6","Art & Cultural Collections","Sztuka i zbiory kultury","M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2 1.5-2H18a3 3 0 0 0 3-3c0-6-4-11-9-11zM7.5 11h.01M10 7h.01M15 7.5h.01"],
+  ["music","#CC3029","Music & Internet Experiments","Muzyka i eksperymenty sieciowe","M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"],
+  ["ref","#476314","Reference & Discovery","Encyklopedie i narzędzia","M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"],
+  ["science","#0766A0","Science & Research","Nauka i badania","M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3M7 15h10"]
+];
+
+/* Sites, listed within each topic in estimated popularity order (most visited first).
+   [id, topic, name, url, safety(0 = low concern, 1 = safe with caveats), EN description, EN caveat, PL description, PL caveat] */
+const SITES = [
+  ["fr24","live","Flightradar24","https://www.flightradar24.com",1,
+   "Tracks many aircraft using ADS-B and related data.",
+   "Legitimate service, but coverage is incomplete and some aircraft are blocked/filtered. Avoid using live tracking to facilitate stalking or harassment.",
+   "Śledzi wiele samolotów na podstawie danych ADS-B i pokrewnych.",
+   "Wiarygodny serwis, ale zasięg jest niepełny, a część samolotów jest blokowana lub filtrowana. Nie używaj śledzenia na żywo do nękania ani stalkingu."],
+  ["windy","live","Windy","https://www.windy.com",1,
+   "Interactive weather, wind, radar and forecast maps.",
+   "Well-established service; forecast models are predictive and can differ. Use official alerts for emergencies.",
+   "Interaktywne mapy pogody, wiatru, radaru i prognoz.",
+   "Uznany serwis; modele prognostyczne to przewidywania i mogą się różnić. W sytuacjach zagrożenia korzystaj z oficjalnych ostrzeżeń."],
+  ["marine","live","MarineTraffic","https://www.marinetraffic.com",1,
+   "Tracks vessels using AIS and related maritime data.",
+   "Legitimate service; positions may be delayed/incomplete. Not a substitute for official navigation or maritime-safety systems.",
+   "Śledzi statki na podstawie danych AIS i innych danych morskich.",
+   "Wiarygodny serwis; pozycje mogą być opóźnione lub niepełne. Nie zastępuje oficjalnych systemów nawigacji ani bezpieczeństwa na morzu."],
+  ["usgs","live","USGS Earthquakes","https://earthquake.usgs.gov",0,
+   "Official U.S. Geological Survey earthquake feeds and maps.",
+   "Authoritative source. Recent event parameters can be revised as more data arrives.",
+   "Oficjalne dane i mapy trzęsień ziemi od Służby Geologicznej USA.",
+   "Źródło autorytatywne. Parametry świeżych zdarzeń mogą być korygowane, gdy napływa więcej danych."],
+  ["zoom","live","Zoom Earth","https://zoom.earth",1,
+   "Live satellite, weather, storms and environmental layers.",
+   "Useful for general awareness, not emergency/aviation/navigation decisions; imagery and model data can be delayed or inaccurate.",
+   "Obraz satelitarny na żywo, pogoda, burze i warstwy środowiskowe.",
+   "Dobre do ogólnej orientacji, nie do decyzji ratunkowych, lotniczych ani nawigacyjnych; zdjęcia i dane modeli mogą być opóźnione lub niedokładne."],
+  ["lightning","live","LightningMaps.org","https://www.lightningmaps.org",1,
+   "Community-based near-real-time lightning map.",
+   "Project documentation says it is for private/entertainment use, not an official lightning warning service.",
+   "Społecznościowa mapa wyładowań atmosferycznych w czasie zbliżonym do rzeczywistego.",
+   "Dokumentacja projektu zaznacza, że służy do użytku prywatnego i rozrywki, a nie jako oficjalny system ostrzegania przed burzami."],
+  ["gfw","live","Global Forest Watch","https://www.globalforestwatch.org",0,
+   "Satellite-based forest, fire and land-use monitoring.",
+   "Strong research tool; datasets have different dates, resolutions and uncertainty levels, so check metadata before drawing conclusions.",
+   "Satelitarny monitoring lasów, pożarów i użytkowania terenu.",
+   "Mocne narzędzie badawcze; zbiory danych mają różne daty, rozdzielczości i poziomy niepewności, więc przed wnioskami sprawdź metadane."],
+  ["cables","live","Submarine Cable Map","https://www.submarinecablemap.com",0,
+   "Interactive map of global submarine communications cables.",
+   "Educational infrastructure map. Do not treat it as a precise operational or security map.",
+   "Interaktywna mapa podmorskich kabli telekomunikacyjnych na świecie.",
+   "Edukacyjna mapa infrastruktury. Nie traktuj jej jako dokładnej mapy operacyjnej ani bezpieczeństwa."],
+
+  ["worldometer","world","Worldometer","https://www.worldometers.info",1,
+   "Live-looking global counters and compiled statistics.",
+   "Live counters are estimates derived from statistical models, not literal real-time measurements. Verify consequential claims with primary sources.",
+   "Liczniki globalne „na żywo” i zebrane statystyki.",
+   "Liczniki to szacunki z modeli statystycznych, a nie dosłowne pomiary w czasie rzeczywistym. Ważne twierdzenia sprawdzaj w źródłach pierwotnych."],
+  ["truesize","world","The True Size Of…","https://www.thetruesize.com",0,
+   "Compares country sizes while compensating for map projection distortion.",
+   "Good educational visualization; remember it compares mapped outlines and not all geographic concepts are captured by area alone.",
+   "Porównuje wielkość krajów z korektą zniekształceń odwzorowania mapy.",
+   "Dobra wizualizacja edukacyjna; pamiętaj, że porównuje obrysy na mapie, a sama powierzchnia nie oddaje wszystkich pojęć geograficznych."],
+  ["ils","world","Internet Live Stats","https://www.internetlivestats.com",1,
+   "Estimated counters for internet activity.",
+   "Counters are modeled/estimated and some platform metrics may become outdated as APIs and services change.",
+   "Szacunkowe liczniki aktywności w internecie.",
+   "Liczniki są modelowane i szacowane, a część wskaźników platform może się zdezaktualizować wraz ze zmianami API i usług."],
+
+  ["osm","maps","OpenStreetMap","https://www.openstreetmap.org",0,
+   "Volunteer-built open world map.",
+   "Generally reliable, but community-edited data can be incomplete or wrong. Verify critical routing/safety information.",
+   "Otwarta mapa świata tworzona przez wolontariuszy.",
+   "Zwykle wiarygodna, ale dane edytowane przez społeczność mogą być niepełne lub błędne. Weryfikuj krytyczne informacje o trasach i bezpieczeństwie."],
+  ["atlas","maps","Atlas Obscura","https://www.atlasobscura.com",1,
+   "Community-driven catalog of unusual places and travel stories.",
+   "Legitimate travel/media site; entries can be community-sourced and conditions/access rules change. Verify before visiting unusual or hazardous places.",
+   "Społecznościowy katalog niezwykłych miejsc i opowieści z podróży.",
+   "Wiarygodny serwis podróżniczy; wpisy mogą pochodzić od społeczności, a warunki i zasady dostępu się zmieniają. Sprawdź przed wyprawą w nietypowe lub niebezpieczne miejsca."],
+  ["windowswap","maps","WindowSwap","https://www.window-swap.com",1,
+   "User-submitted window-view videos from around the world.",
+   "User-generated media can be unpredictable. Avoid sharing personal information and expect third-party tracking/cookies.",
+   "Nadesłane przez użytkowników nagrania widoków z okien z całego świata.",
+   "Treści od użytkowników bywają nieprzewidywalne. Nie udostępniaj danych osobowych i licz się ze śledzeniem i ciasteczkami firm trzecich."],
+  ["mapcrunch","maps","MapCrunch","https://www.mapcrunch.com",1,
+   "Random Google Street View exploration.",
+   "Uses third-party map imagery. Street View can show people/places incidentally; respect privacy and do not use it to target individuals.",
+   "Losowe wędrówki po Google Street View.",
+   "Korzysta ze zdjęć map firm trzecich. Street View może przypadkiem pokazywać ludzi i miejsca; szanuj prywatność i nie namierzaj konkretnych osób."],
+  ["oldmaps","maps","OldMapsOnline","https://www.oldmapsonline.org",0,
+   "Search and browse digitized historical maps.",
+   "Reputable discovery tool. Historical maps can contain outdated names, boundaries, stereotypes or errors.",
+   "Wyszukiwarka i przeglądarka zdigitalizowanych map historycznych.",
+   "Rzetelne narzędzie. Dawne mapy mogą zawierać nieaktualne nazwy, granice, stereotypy lub błędy."],
+  ["rumsey","maps","David Rumsey Map Collection","https://www.davidrumsey.com",0,
+   "Large high-resolution historical map archive.",
+   "Established archive. Reuse rights vary by item; check rights statements before republication.",
+   "Duże archiwum map historycznych w wysokiej rozdzielczości.",
+   "Uznane archiwum. Prawa do ponownego użycia różnią się dla poszczególnych pozycji; sprawdź je przed publikacją."],
+  ["vv","maps","Virtual Vacation","https://virtualvacation.us",1,
+   "Virtual city walks, drives, live cams and travel exploration.",
+   "Mostly entertainment; embedded media and live cams may come from third parties. Treat location details as informational.",
+   "Wirtualne spacery i przejazdy po miastach, kamery na żywo i podróże.",
+   "Głównie rozrywka; osadzone filmy i kamery mogą pochodzić od firm trzecich. Traktuj szczegóły lokalizacji informacyjnie."],
+
+  ["neal","learn","Neal.fun","https://neal.fun",0,
+   "Interactive web experiments, games and educational visualizations.",
+   "Generally benign entertainment/education. Some experiences simplify complex topics for interactivity.",
+   "Interaktywne eksperymenty, gry i wizualizacje edukacyjne.",
+   "Zasadniczo nieszkodliwa rozrywka i nauka. Niektóre projekty upraszczają złożone tematy na potrzeby interakcji."],
+  ["scale","learn","The Scale of the Universe 2","https://htwins.net/scale2",1,
+   "Interactive scale journey from the very small to the very large.",
+   "Older educational project. Treat numerical values as illustrative and verify exact scientific quantities elsewhere.",
+   "Interaktywna podróż przez skale: od najmniejszych do największych.",
+   "Starszy projekt edukacyjny. Traktuj wartości liczbowe poglądowo, a dokładne wielkości naukowe sprawdzaj gdzie indziej."],
+
+  ["apod","space","NASA APOD","https://apod.nasa.gov",0,
+   "Astronomy Picture of the Day with expert commentary.",
+   "Official NASA-hosted resource. Individual image copyright/reuse terms can vary.",
+   "Astronomiczne zdjęcie dnia z komentarzem eksperta.",
+   "Oficjalny zasób NASA. Prawa autorskie i warunki użycia poszczególnych zdjęć mogą się różnić."],
+  ["nasaimg","space","NASA Image and Video Library","https://images.nasa.gov",0,
+   "Searchable NASA media archive.",
+   "Official resource. Much NASA media is broadly reusable, but logos, third-party material and identifiable persons can have separate restrictions.",
+   "Przeszukiwalne archiwum zdjęć i filmów NASA.",
+   "Zasób oficjalny. Wiele materiałów NASA można swobodnie wykorzystywać, ale logotypy, materiały zewnętrzne i rozpoznawalne osoby mogą podlegać osobnym ograniczeniom."],
+  ["stellarium","space","Stellarium Web","https://stellarium-web.org",0,
+   "Browser-based planetarium and sky map.",
+   "Established open-source astronomy tool. Accuracy depends on settings, time and location.",
+   "Planetarium i mapa nieba w przeglądarce.",
+   "Uznane narzędzie open source. Dokładność zależy od ustawień, czasu i lokalizacji."],
+  ["eyes","space","NASA Eyes","https://eyes.nasa.gov",0,
+   "NASA 3D visualizations of spacecraft, planets and Earth systems.",
+   "Official NASA experience. Visualizations can be simulated or model-based rather than literal camera views.",
+   "Wizualizacje 3D NASA: sondy, planety i systemy Ziemi.",
+   "Oficjalny projekt NASA. Wizualizacje mogą być symulacjami lub modelami, a nie dosłownymi obrazami z kamer."],
+
+  ["owid","story","Our World in Data","https://ourworldindata.org",0,
+   "Research-backed global datasets, charts and explainers.",
+   "Strong source aggregation. Many datasets originate elsewhere and retain their own definitions, revisions and licenses.",
+   "Oparte na badaniach globalne zbiory danych, wykresy i objaśnienia.",
+   "Solidne zestawienie źródeł. Wiele danych pochodzi z innych instytucji i zachowuje ich definicje, rewizje i licencje."],
+  ["pudding","story","The Pudding","https://pudding.cool",0,
+   "Interactive visual essays built around data and storytelling.",
+   "High-quality editorial work; methodology varies by story, so inspect sources when precision matters.",
+   "Interaktywne eseje wizualne oparte na danych i narracji.",
+   "Wysoka jakość redakcyjna; metodologia różni się między tekstami, więc gdy liczy się precyzja, sprawdź źródła."],
+  ["gapminder","story","Gapminder","https://www.gapminder.org",0,
+   "Tools for exploring global trends and misconceptions.",
+   "Reputable educational foundation. Check original data sources for formal research or policy work.",
+   "Narzędzia do badania globalnych trendów i obalania mitów.",
+   "Rzetelna fundacja edukacyjna. Do formalnych badań i analiz politycznych sięgaj po źródła oryginalne."],
+  ["iib","story","Information Is Beautiful","https://informationisbeautiful.net",1,
+   "Data visualizations and infographics on varied topics.",
+   "Useful for exploration, but visual storytelling can compress nuance. Follow source links before relying on a claim.",
+   "Wizualizacje danych i infografiki na różne tematy.",
+   "Dobre do eksploracji, ale opowieść wizualna może spłaszczać niuanse. Zanim na czymś się oprzesz, sprawdź źródła."],
+
+  ["wb","official","World Bank Data","https://data.worldbank.org",0,
+   "Open development indicators and country data.",
+   "Authoritative public-data portal; indicator definitions and revision schedules matter for comparisons.",
+   "Otwarte wskaźniki rozwoju i dane o krajach.",
+   "Autorytatywny portal danych publicznych; przy porównaniach liczą się definicje wskaźników i harmonogramy rewizji."],
+  ["tuik","official","TÜİK Data Portal","https://data.tuik.gov.tr",0,
+   "Official statistics from the Turkish Statistical Institute.",
+   "Official national statistics portal. For sensitive comparisons, note methodology, revision dates and political/measurement context.",
+   "Oficjalne statystyki Tureckiego Instytutu Statystycznego.",
+   "Oficjalny portal statystyki krajowej. Przy wrażliwych porównaniach uwzględnij metodologię, daty rewizji oraz kontekst polityczny i pomiarowy."],
+
+  ["ia","books","Internet Archive","https://archive.org",1,
+   "Large archive of books, websites, audio, video and software.",
+   "Legitimate nonprofit, but the collection includes user uploads, mature/historical material and old software. Avoid executing unknown downloads; copyright status varies.",
+   "Ogromne archiwum książek, stron WWW, nagrań, filmów i oprogramowania.",
+   "Wiarygodna organizacja non-profit, ale zbiory obejmują materiały od użytkowników, treści dla dorosłych i historyczne oraz stare oprogramowanie. Nie uruchamiaj nieznanych plików; status praw autorskich bywa różny."],
+  ["gutenberg","books","Project Gutenberg","https://www.gutenberg.org",0,
+   "75,000+ free ebooks, mainly public-domain works in the U.S.",
+   "Long-running nonprofit. Copyright status can differ by country, so local law may affect downloading/reuse.",
+   "Ponad 75 000 darmowych e-booków, głównie z domeny publicznej w USA.",
+   "Długo działający projekt non-profit. Status praw autorskich różni się między krajami, więc lokalne prawo może wpływać na pobieranie i wykorzystanie."],
+  ["loc","books","Library of Congress","https://www.loc.gov",0,
+   "U.S. Library of Congress digital collections and research resources.",
+   "Official institution. Rights/reproduction status differs across collection items.",
+   "Cyfrowe zbiory i zasoby badawcze Biblioteki Kongresu USA.",
+   "Instytucja oficjalna. Prawa do reprodukcji różnią się między pozycjami w zbiorach."],
+  ["openlib","books","Open Library","https://openlibrary.org",1,
+   "Open catalog plus digital borrowing from Internet Archive collections.",
+   "Legitimate service. Some lending/copyright practices have been legally contested; availability and rights differ by title and jurisdiction.",
+   "Otwarty katalog i cyfrowe wypożyczanie ze zbiorów Internet Archive.",
+   "Wiarygodny serwis. Część praktyk wypożyczania była kwestionowana prawnie; dostępność i prawa zależą od tytułu i jurysdykcji."],
+  ["europeana","books","Europeana","https://www.europeana.eu",0,
+   "European cultural-heritage collections aggregated from institutions.",
+   "Reputable EU-supported platform. Item-level rights statements vary.",
+   "Zbiory europejskiego dziedzictwa kulturowego z wielu instytucji.",
+   "Rzetelna platforma wspierana przez UE. Informacje o prawach różnią się dla poszczególnych obiektów."],
+  ["dpla","books","Digital Public Library of America","https://dp.la",0,
+   "Aggregated U.S. library, archive and museum collections.",
+   "Reputable nonprofit. Rights and source quality depend on contributing institutions.",
+   "Połączone zbiory amerykańskich bibliotek, archiwów i muzeów.",
+   "Rzetelna organizacja non-profit. Prawa i jakość materiałów zależą od instytucji, które je udostępniają."],
+
+  ["gac","art","Google Arts & Culture","https://artsandculture.google.com",1,
+   "Virtual museum exhibits, artworks and cultural stories.",
+   "Legitimate Google service; normal Google privacy/cookie considerations apply. Image reuse rights vary by partner institution.",
+   "Wirtualne wystawy muzealne, dzieła sztuki i opowieści o kulturze.",
+   "Wiarygodna usługa Google; obowiązują typowe dla Google kwestie prywatności i ciasteczek. Prawa do obrazów zależą od instytucji partnerskiej."],
+  ["met","art","The Met Collection","https://www.metmuseum.org/art/collection",0,
+   "Metropolitan Museum of Art online collection.",
+   "Official museum resource. Many Open Access works are clearly marked; other objects may have restrictions.",
+   "Kolekcja online Metropolitan Museum of Art.",
+   "Oficjalny zasób muzeum. Wiele dzieł w otwartym dostępie jest wyraźnie oznaczonych; inne obiekty mogą mieć ograniczenia."],
+  ["wikiart","art","WikiArt","https://www.wikiart.org",1,
+   "Large online visual-art encyclopedia.",
+   "Mixes public-domain and copyrighted art; the site states some protected works are shown under fair-use rationale. Reuse requires care.",
+   "Duża internetowa encyklopedia sztuk wizualnych.",
+   "Łączy dzieła z domeny publicznej i chronione; serwis podaje, że część chronionych prac pokazuje w ramach dozwolonego użytku. Ponowne wykorzystanie wymaga ostrożności."],
+  ["openculture","art","Open Culture","https://www.openculture.com",1,
+   "Curated links to free educational and cultural resources.",
+   "Legitimate curation site, but it links to third-party hosts. Verify external download pages and licensing before use.",
+   "Wybrane linki do darmowych zasobów edukacyjnych i kulturalnych.",
+   "Wiarygodny serwis kuratorski, ale odsyła do zewnętrznych stron. Przed użyciem sprawdź strony pobierania i licencje."],
+  ["rijks","art","Rijksmuseum","https://www.rijksmuseum.nl",0,
+   "Museum collection with many high-resolution images.",
+   "Official museum site. Many images are reusable, but verify the rights label for each object.",
+   "Kolekcja muzeum z wieloma zdjęciami w wysokiej rozdzielczości.",
+   "Oficjalna strona muzeum. Wiele obrazów można wykorzystać, ale sprawdź oznaczenie praw przy każdym obiekcie."],
+  ["pdr","art","The Public Domain Review","https://publicdomainreview.org",0,
+   "Curated essays and historical works from the public domain.",
+   "Reputable not-for-profit. Check the source item and jurisdiction before assuming every embedded asset is reusable everywhere.",
+   "Wybrane eseje i dawne dzieła z domeny publicznej.",
+   "Rzetelna organizacja non-profit. Zanim uznasz, że każdy materiał można wszędzie wykorzystać, sprawdź źródło i jurysdykcję."],
+
+  ["radiooooo","music","Radiooooo","https://radiooooo.com",1,
+   "Explore music by country and decade.",
+   "Legitimate music-discovery service. Account, streaming and regional rights/availability may vary.",
+   "Odkrywaj muzykę według kraju i dekady.",
+   "Wiarygodny serwis do odkrywania muzyki. Konto, streaming i dostępność regionalna mogą się różnić."],
+  ["musicmap","music","Musicmap","https://musicmap.info",0,
+   "Interactive genealogy/map of music genres.",
+   "Educational visualization; genre relationships are interpretive rather than universally agreed.",
+   "Interaktywne drzewo genealogiczne i mapa gatunków muzycznych.",
+   "Wizualizacja edukacyjna; powiązania gatunków to interpretacja, a nie powszechnie przyjęty podział."],
+  ["listenwiki","music","Listen to Wikipedia","https://listen.hatnote.com",0,
+   "Turns live Wikipedia edits into musical sounds and visuals.",
+   "Benign visualization, but it reflects public edits in real time and should not be treated as curated factual content.",
+   "Zamienia bieżące edycje Wikipedii w dźwięki i obrazy.",
+   "Nieszkodliwa wizualizacja, ale pokazuje publiczne edycje na żywo i nie należy jej traktować jak sprawdzonych treści."],
+
+  ["wikipedia","ref","Wikipedia","https://www.wikipedia.org",1,
+   "Massive collaboratively edited encyclopedia.",
+   "Excellent discovery tool, but pages are user-edited and quality varies. Verify high-stakes or disputed claims with primary/reliable sources.",
+   "Ogromna encyklopedia tworzona wspólnie przez użytkowników.",
+   "Świetne narzędzie do odkrywania, ale strony edytują użytkownicy i jakość bywa różna. Ważne lub sporne twierdzenia sprawdzaj w źródłach pierwotnych."],
+  ["timeanddate","ref","timeanddate.com","https://www.timeanddate.com",0,
+   "Time zones, calendars, sunrise/sunset, astronomy and calculators.",
+   "Established utility site. Location-based results depend on selected place and settings; emergency weather information should come from official agencies.",
+   "Strefy czasowe, kalendarze, wschody i zachody słońca, astronomia i kalkulatory.",
+   "Uznany serwis narzędziowy. Wyniki zależą od wybranego miejsca i ustawień; informacje o zagrożeniach pogodowych bierz z oficjalnych służb."],
+
+  ["arxiv","science","arXiv","https://arxiv.org",1,
+   "Open repository of research preprints.",
+   "Essential research resource, but papers are generally not peer reviewed at posting. Findings can be preliminary, incorrect or later revised.",
+   "Otwarte repozytorium preprintów naukowych.",
+   "Kluczowy zasób badawczy, ale prace w chwili publikacji zwykle nie są recenzowane. Wyniki mogą być wstępne, błędne lub później poprawione."],
+  ["sciencedaily","science","ScienceDaily","https://www.sciencedaily.com",1,
+   "Science-news aggregation, often based on institutional releases.",
+   "Useful for discovery, but articles can closely track press releases. Read the underlying study before treating findings as settled.",
+   "Agregator wiadomości naukowych, często opartych na komunikatach instytucji.",
+   "Dobry do odkrywania, ale artykuły mogą wiernie powtarzać komunikaty prasowe. Zanim uznasz wynik za pewny, przeczytaj oryginalne badanie."],
+  ["observable","science","Observable","https://observablehq.com",1,
+   "Interactive notebooks for data analysis and live code.",
+   "Legitimate platform with user-authored code. Do not expose secrets or blindly trust/run unfamiliar notebooks, external data fetches or copied code.",
+   "Interaktywne notatniki do analizy danych i kodu na żywo.",
+   "Wiarygodna platforma z kodem pisanym przez użytkowników. Nie ujawniaj sekretów i nie uruchamiaj na ślepo nieznanych notatników, zewnętrznych pobrań danych ani skopiowanego kodu."]
+];
+
+const T = {
+  en:{
+    tag:"50 safety-checked websites for getting happily lost, sorted into 12 colour-coded topics. Bigger buttons are the more popular sites in each topic.",
+    sites:"sites", topics:"topics", low:"low concern", cav:"with caveats",
+    search:"Search sites, topics or descriptions", clear:"Clear search",
+    lowOnly:"Low concern only", adjust:"Adjust ranking", done:"Done", reset:"Reset to estimates",
+    adjText:"Use ▲ and ▼ to move a site up or down within its topic. Button sizes follow the new order. Changes are saved in this browser only.",
+    all:"All topics",
+    lg1:"Most visited in topic", lg2:"Well known", lg3:"Niche find",
+    lgNote:"Popularity is an estimate from public web-traffic rankings (Sept 2026).",
+    safe0:"Low concern", safe1:"Safe with caveats",
+    rank:(r,n)=>`#${r} of ${n}`, popOf:(r,n,t)=>`Popularity: #${r} of ${n} in ${t}`,
+    caveat:"Key caveat", visit:"Open site ↗", details:"Details for", up:"Move up", down:"Move down",
+    empty:q=>`No sites match “${q}”.`, emptyBtn:"Show all sites",
+    notes:[
+      ["What “safe” means","All 50 domains are recognisable legitimate resources or long-running projects. “Safe” means no obvious legitimacy concern. It does not guarantee against changing content, tracking, third-party links or user uploads."],
+      ["Main cautions","Live-location misuse (aircraft, vessels, street imagery), user-generated or archived downloads, copyright and licensing, privacy and cookies, and the difference between exploratory content and authoritative evidence. For emergencies, navigation, medical, legal or high-stakes research, use the relevant official source."],
+      ["Browsing rule","Keep your browser updated, avoid installing unknown extensions or executables, be cautious with login or payment prompts, and check item-level licences before republishing images, books, maps, audio or datasets. Reviewed 27 September 2026; site content and policies can change after that date."]
+    ]
+  },
+  pl:{
+    tag:"50 sprawdzonych pod kątem bezpieczeństwa stron, w których można się miło zgubić, w 12 tematach oznaczonych kolorami. Większe przyciski to popularniejsze strony w danym temacie.",
+    sites:"stron", topics:"tematów", low:"niskie ryzyko", cav:"z zastrzeżeniami",
+    search:"Szukaj stron, tematów lub opisów", clear:"Wyczyść wyszukiwanie",
+    lowOnly:"Tylko niskie ryzyko", adjust:"Dostosuj ranking", done:"Gotowe", reset:"Przywróć szacunki",
+    adjText:"Użyj ▲ i ▼, aby przesunąć stronę w górę lub w dół w jej temacie. Rozmiary przycisków dopasują się do nowej kolejności. Zmiany zapisują się tylko w tej przeglądarce.",
+    all:"Wszystkie tematy",
+    lg1:"Najczęściej odwiedzane w temacie", lg2:"Dobrze znane", lg3:"Niszowe perełki",
+    lgNote:"Popularność to szacunek na podstawie publicznych rankingów ruchu (wrzesień 2026).",
+    safe0:"Niskie ryzyko", safe1:"Bezpieczne z zastrzeżeniami",
+    rank:(r,n)=>`#${r} z ${n}`, popOf:(r,n,t)=>`Popularność: #${r} z ${n} w temacie ${t}`,
+    caveat:"Główne zastrzeżenie", visit:"Otwórz stronę ↗", details:"Szczegóły:", up:"Przesuń wyżej", down:"Przesuń niżej",
+    empty:q=>`Żadna strona nie pasuje do „${q}”.`, emptyBtn:"Pokaż wszystkie strony",
+    notes:[
+      ["Co znaczy „bezpieczne”","Wszystkie 50 domen to rozpoznawalne, wiarygodne zasoby lub długo działające projekty. „Bezpieczne” oznacza brak oczywistych wątpliwości co do wiarygodności. Nie chroni przed zmianą treści, śledzeniem, linkami zewnętrznymi ani materiałami od użytkowników."],
+      ["Główne zastrzeżenia","Nadużycia danych o lokalizacji na żywo (samoloty, statki, zdjęcia ulic), pliki od użytkowników i archiwalne, prawa autorskie i licencje, prywatność i ciasteczka oraz różnica między treściami do eksploracji a wiarygodnymi dowodami. W sytuacjach zagrożenia, nawigacji, sprawach medycznych, prawnych i ważnych badaniach korzystaj z oficjalnych źródeł."],
+      ["Zasada przeglądania","Aktualizuj przeglądarkę, nie instaluj nieznanych rozszerzeń ani plików wykonywalnych, uważaj na prośby o logowanie lub płatność i sprawdzaj licencje przed ponowną publikacją obrazów, książek, map, nagrań lub danych. Przegląd z 27 września 2026; treści i zasady stron mogą się później zmienić."]
+    ]
+  }
+};
+
+/* ---------- state ---------- */
+const store = {
+  get(k){try{return JSON.parse(localStorage.getItem("rha:"+k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem("rha:"+k,JSON.stringify(v))}catch(e){}},
+  del(k){try{localStorage.removeItem("rha:"+k)}catch(e){}}
+};
+const byId = Object.fromEntries(SITES.map(s=>[s[0],s]));
+const defaultOrder = () => Object.fromEntries(TOPICS.map(t=>[t[0],SITES.filter(s=>s[1]===t[0]).map(s=>s[0])]));
+function loadOrder(){
+  const saved = store.get("order"), def = defaultOrder();
+  if(!saved) return def;
+  for(const k in def){
+    const s = Array.isArray(saved[k]) ? saved[k].filter(id=>def[k].includes(id)) : [];
+    def[k].forEach(id=>{ if(!s.includes(id)) s.push(id); });
+    def[k] = s;
+  }
+  return def;
+}
+let lang = store.get("lang") || ((navigator.language||"").toLowerCase().startsWith("pl") ? "pl" : "en");
+const state = {q:"", topic:null, lowOnly:false, adjusting:false, order:loadOrder()};
+const hash = (location.hash||"").slice(1);
+if(TOPICS.some(t=>t[0]===hash)) state.topic = hash;
+
+/* Tier from rank within topic: top ~25% tiles, next ~40% cards, rest pills */
+function tierFor(i,n){
+  const t1 = Math.max(1, Math.round(n*0.25));
+  const t2 = Math.max(1, Math.round(n*0.4));
+  return i < t1 ? 1 : i < t1+t2 ? 2 : 3;
+}
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const host = u => u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"");
+const icon = (d,sz=18) => `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+const SHIELD_OK = "M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6zM9 12l2 2 4-4";
+const SHIELD_WARN = "M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6zM12 8v5M12 16.5h.01";
+const topicName = t => lang==="pl" ? t[3] : t[2];
+const desc = s => lang==="pl" ? s[7] : s[5];
+const cav = s => lang==="pl" ? s[8] : s[6];
+
+function matches(s){
+  if(state.lowOnly && s[4]!==0) return false;
+  if(!state.q) return true;
+  const q = state.q.toLowerCase();
+  const t = TOPICS.find(x=>x[0]===s[1]);
+  return [s[2],host(s[3]),s[5],s[7],t[2],t[3]].some(v=>v.toLowerCase().includes(q));
+}
+
+/* ---------- render ---------- */
+function renderStatic(){
+  const L = T[lang];
+  document.documentElement.lang = lang;
+  $("#h-tag").textContent = L.tag;
+  const low = SITES.filter(s=>s[4]===0).length;
+  $("#stats").innerHTML =
+    `<div class="stat"><b>${SITES.length}</b><span>${L.sites}</span></div>`+
+    `<div class="stat"><b>${TOPICS.length}</b><span>${L.topics}</span></div>`+
+    `<div class="stat ok"><b>${low}</b><span>${L.low}</span></div>`+
+    `<div class="stat warn"><b>${SITES.length-low}</b><span>${L.cav}</span></div>`;
+  $("#q").placeholder = L.search;
+  $("#q").setAttribute("aria-label", L.search);
+  $("#q-clear").setAttribute("aria-label", L.clear);
+  $("#low-only span:last-child").textContent = L.lowOnly;
+  $("#adjust span").textContent = state.adjusting ? L.done : L.adjust;
+  $("#adj-text").textContent = L.adjText;
+  $("#adj-reset").textContent = L.reset;
+  $("#adj-done").textContent = L.done;
+  $("#legend").innerHTML =
+    `<span class="k"><span class="lg l1"></span>${L.lg1}</span>`+
+    `<span class="k"><span class="lg l2"></span>${L.lg2}</span>`+
+    `<span class="k"><span class="lg l3"></span>${L.lg3}</span>`+
+    `<span class="k">${icon(SHIELD_OK,16).replace('<svg','<svg style="color:var(--ok)"')}${L.safe0}</span>`+
+    `<span class="k">${icon(SHIELD_WARN,16).replace('<svg','<svg style="color:var(--warn)"')}${L.safe1}</span>`+
+    `<span class="note">${L.lgNote}</span>`;
+  $("#notes").innerHTML = L.notes.map(n=>`<section><h4>${esc(n[0])}</h4><p>${esc(n[1])}</p></section>`).join("");
+  document.querySelectorAll(".langsw button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.lang===lang)));
+}
+
+function renderChips(){
+  const L = T[lang];
+  const visibleCount = t => state.order[t[0]].filter(id=>matches(byId[id])).length;
+  const total = SITES.filter(matches).length;
+  let html = `<button type="button" class="chip all" data-topic="" aria-pressed="${state.topic===null}"><i></i>${L.all}<small>${total}</small></button>`;
+  for(const t of TOPICS){
+    const n = visibleCount(t);
+    html += `<button type="button" class="chip${n?"":" dim"}" style="--c:${t[1]}" data-topic="${t[0]}" aria-pressed="${state.topic===t[0]}"><i></i>${esc(topicName(t))}<small>${n}</small></button>`;
+  }
+  $("#chips").innerHTML = html;
+}
+
+function siteHTML(s, i, n, t){
+  const L = T[lang], tier = tierFor(i,n), r = i+1;
+  const safe = s[4]===0;
+  const badge = `<span class="badge ${safe?"ok":"warn"}">${icon(safe?SHIELD_OK:SHIELD_WARN,13)}${safe?L.safe0:L.safe1}</span>`;
+  const info = `<button type="button" class="info" data-info="${s[0]}" aria-label="${esc(L.details+" "+s[2])}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>`;
+  const adj = `<span class="adj"><button type="button" data-move="-1" data-id="${s[0]}" aria-label="${esc(L.up+": "+s[2])}" ${i===0?"disabled":""}>▲</button><button type="button" data-move="1" data-id="${s[0]}" aria-label="${esc(L.down+": "+s[2])}" ${i===n-1?"disabled":""}>▼</button></span>`;
+  const a = `href="${esc(s[3])}" target="_blank" rel="noopener noreferrer" data-id="${s[0]}"`;
+  if(tier===1){
+    return `<div class="site t1" data-id="${s[0]}"><a ${a}><span class="rank">${L.rank(r,n)}</span><span class="nm">${esc(s[2])}</span><span class="ds">${esc(desc(s))}</span><span class="foot"><span class="dom">${esc(host(s[3]))}</span>${badge}</span></a>${info}${adj}</div>`;
+  }
+  if(tier===2){
+    return `<div class="site t2" data-id="${s[0]}"><a ${a}><span class="rank">${L.rank(r,n)}</span><span class="nm">${esc(s[2])}</span><span class="dom">${esc(host(s[3]))}</span><span class="foot">${badge}</span></a>${info}${adj}</div>`;
+  }
+  return `<div class="site t3" data-id="${s[0]}"><a ${a}>${esc(s[2])}<span class="shield ${safe?"ok":"warn"}" title="${safe?L.safe0:L.safe1}" aria-label="${safe?L.safe0:L.safe1}">${icon(safe?SHIELD_OK:SHIELD_WARN,14)}</span></a>${info}${adj}</div>`;
+}
+
+function renderBands(){
+  const L = T[lang];
+  let html = "";
+  for(const t of TOPICS){
+    if(state.topic && state.topic!==t[0]) continue;
+    const ids = state.order[t[0]], n = ids.length;
+    const shown = ids.map((id,i)=>[byId[id],i]).filter(([s])=>matches(s));
+    if(!shown.length) continue;
+    html += `<section class="band" id="${t[0]}" style="--c:${t[1]}" aria-labelledby="h-${t[0]}">`+
+      `<div class="band-head"><span class="sq">${icon(t[4],18)}</span><h2 id="h-${t[0]}">${esc(topicName(t))}</h2><span class="cnt">${shown.length===n?n:shown.length+" / "+n} ${L.sites}</span></div>`+
+      `<div class="items">${shown.map(([s,i])=>siteHTML(s,i,n,t)).join("")}</div></section>`;
+  }
+  if(!html){
+    html = `<div class="empty"><div>${esc(state.q ? L.empty(state.q) : L.empty("—"))}</div><button type="button" id="empty-reset">${L.emptyBtn}</button></div>`;
+  }
+  $("#bands").innerHTML = html;
+}
+
+function render(){ renderStatic(); renderChips(); renderBands(); }
+
+/* ---------- detail popover ---------- */
+const tip = $("#tip");
+let tipFor = null, tipPinned = false, hideTimer = null;
+function showTip(id, anchor, pinned){
+  clearTimeout(hideTimer);
+  const s = byId[id], t = TOPICS.find(x=>x[0]===s[1]), L = T[lang];
+  const ids = state.order[t[0]], r = ids.indexOf(id)+1, safe = s[4]===0;
+  tip.style.setProperty("--c", t[1]);
+  tip.innerHTML =
+    `<button type="button" class="x" aria-label="Close">×</button>`+
+    `<div class="th"><i></i><span>${esc(topicName(t))}</span></div>`+
+    `<h3>${esc(s[2])}</h3><div class="dom">${esc(host(s[3]))}</div>`+
+    `<p>${esc(desc(s))}</p>`+
+    `<div class="meta"><span class="badge ${safe?"ok":"warn"}">${icon(safe?SHIELD_OK:SHIELD_WARN,13)}${safe?L.safe0:L.safe1}</span><span class="pop">${esc(L.popOf(r,ids.length,topicName(t)))}</span></div>`+
+    `<div class="cav"><b>${L.caveat}</b>${esc(cav(s))}</div>`+
+    `<a class="go" href="${esc(s[3])}" target="_blank" rel="noopener noreferrer">${L.visit}</a>`;
+  tip.querySelector(".x").hidden = !pinned;
+  tip.setAttribute("aria-label", s[2]);
+  tip.hidden = false;
+  tipFor = id; tipPinned = !!pinned;
+  const rct = anchor.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+  const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  let left = Math.min(Math.max(16, rct.left), vw - w - 16);
+  let top = rct.bottom + 8;
+  if(top + h > vh - 12) top = rct.top - h - 8;
+  if(top < 12) top = Math.max(12, (vh - h)/2);
+  tip.style.left = left+"px"; tip.style.top = top+"px";
+}
+function hideTip(){ tip.hidden = true; tipFor = null; tipPinned = false; }
+const canHover = window.matchMedia("(hover:hover) and (pointer:fine)").matches;
+
+document.addEventListener("mouseover", e=>{
+  if(!canHover || tipPinned) return;
+  const site = e.target.closest(".site");
+  if(site){ if(tipFor!==site.dataset.id) showTip(site.dataset.id, site, false); else clearTimeout(hideTimer); return; }
+  if(e.target.closest("#tip")){ clearTimeout(hideTimer); return; }
+  if(tipFor){ clearTimeout(hideTimer); hideTimer = setTimeout(hideTip, 120); }
+});
+document.addEventListener("focusin", e=>{
+  const a = e.target.closest(".site a");
+  if(a && !tipPinned) showTip(a.dataset.id, a.parentElement, false);
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !tip.hidden){ const id=tipFor; hideTip(); const b=document.querySelector(`.info[data-info="${id}"]`); if(b) b.focus(); }});
+window.addEventListener("scroll", ()=>{ if(!tipPinned && !tip.hidden) hideTip(); $("#bar").classList.toggle("stuck", window.scrollY > 120); }, {passive:true});
+
+document.addEventListener("click", e=>{
+  const info = e.target.closest(".info");
+  if(info){
+    const id = info.dataset.info;
+    if(tipPinned && tipFor===id) hideTip(); else showTip(id, info.closest(".site"), true);
+    return;
+  }
+  if(e.target.closest("#tip .x")){ hideTip(); return; }
+  const mv = e.target.closest("[data-move]");
+  if(mv){ move(mv.dataset.id, +mv.dataset.move); return; }
+  const chip = e.target.closest(".chip");
+  if(chip){
+    const tp = chip.dataset.topic || null;
+    state.topic = (tp && state.topic===tp) ? null : tp;
+    renderChips(); renderBands();
+    const target = state.topic ? document.getElementById(state.topic) : $("#bands");
+    const barH = $("#bar").offsetHeight;
+    const y = target.getBoundingClientRect().top + window.scrollY - barH - 12;
+    if(window.scrollY > y) window.scrollTo({top:y, behavior:"smooth"});
+    return;
+  }
+  if(e.target.closest("#empty-reset")){ state.q=""; state.lowOnly=false; state.topic=null; $("#q").value=""; $("#q-clear").hidden=true; $("#low-only").setAttribute("aria-pressed","false"); renderChips(); renderBands(); return; }
+  if(tipPinned && !e.target.closest("#tip")) hideTip();
+});
+
+function move(id, dir){
+  const s = byId[id], arr = state.order[s[1]], i = arr.indexOf(id), j = i + dir;
+  if(j<0 || j>=arr.length) return;
+  [arr[i],arr[j]] = [arr[j],arr[i]];
+  store.set("order", state.order);
+  hideTip(); renderBands();
+  const btn = document.querySelector(`[data-move="${dir}"][data-id="${id}"]:not(:disabled)`) || document.querySelector(`[data-move="${-dir}"][data-id="${id}"]`);
+  if(btn) btn.focus();
+}
+
+/* ---------- controls ---------- */
+$("#q").addEventListener("input", e=>{ state.q = e.target.value.trim(); $("#q-clear").hidden = !e.target.value; hideTip(); renderChips(); renderBands(); });
+$("#q-clear").addEventListener("click", ()=>{ $("#q").value=""; state.q=""; $("#q-clear").hidden=true; renderChips(); renderBands(); $("#q").focus(); });
+$("#low-only").addEventListener("click", e=>{ state.lowOnly = !state.lowOnly; e.currentTarget.setAttribute("aria-pressed", String(state.lowOnly)); hideTip(); renderChips(); renderBands(); });
+function setAdjust(on){
+  state.adjusting = on;
+  document.body.classList.toggle("adjusting", on);
+  $("#adjust").setAttribute("aria-pressed", String(on));
+  $("#adjbanner").hidden = !on;
+  $("#adjust span").textContent = on ? T[lang].done : T[lang].adjust;
+}
+$("#adjust").addEventListener("click", ()=>setAdjust(!state.adjusting));
+$("#adj-done").addEventListener("click", ()=>setAdjust(false));
+$("#adj-reset").addEventListener("click", ()=>{ state.order = defaultOrder(); store.del("order"); renderBands(); });
+document.querySelectorAll(".langsw button").forEach(b=>b.addEventListener("click", ()=>{ lang = b.dataset.lang; store.set("lang", lang); hideTip(); render(); }));
+
+render();
+})();
+</script>
+</body>
+</html>
